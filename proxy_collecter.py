@@ -6,7 +6,7 @@ proxies = []
 
 
 def getProxyList():
-    pages_to_scan = 4
+    pages_to_scan = 1
     i = 1
     while i <= pages_to_scan:
         web_page = urllib2.urlopen("http://proxy-list.org/russian/index.php?p=%s" % str(i)).read()
