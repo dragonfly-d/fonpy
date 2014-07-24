@@ -23,7 +23,6 @@ else:
 if not os.path.exists(img_path):
     os.makedirs(img_path)
 
-
 for i, a in enumerate(soup.find_all('a', {"class": "menu"})):
     if "/catalog/" in a.get('href'):
         categories[str(i)] = a.get('href').split("/")[2]
@@ -33,7 +32,6 @@ while True:
     category_num = raw_input("please input category number: ")
     if category_num in categories.keys():
         category = categories[category_num]
-        print category
         break
     else:
         print "please specify correct category"
@@ -46,7 +44,6 @@ for img in soup.find_all('img'):
     if "/wallpaper/" in img.get('src'):
         img_num = img.get('src').split("/")[5].replace("-n.jpg", "")
         url = img.get('src').replace("/wallpaper/previews", "/image").replace('-n', "-" + img_size)
-        print url
 
         try:
             r = urllib2.urlopen(url)
@@ -57,22 +54,32 @@ for img in soup.find_all('img'):
 
         except urllib2.HTTPError, e:
             if e.code == 404:
-                print 'Cannot load image %s, no such size or file - %s.' % (img_num, e.code)
+                print 'Cannot load image %s, no such size (or file) - %s.' % (img_num, e.code)
                 continue
 
             if e.code == 503:
+                print "cannot get %s " % img_num
                 print 'should use proxy -%s' % e.code
                 print "trying to get proxies..."
                 px = getProxyList()
                 if len(px) > 0:
-                    print "proxies successfully recieved."
-                    proxy_ip = px[px_counter]
-                    proxy = urllib2.ProxyHandler({'http': proxy_ip})
-                    opener = urllib2.build_opener(proxy)
-                    urllib2.install_opener(opener)
-                    print 'proxy %s added' % proxy_ip
-                    px_counter += 1
-                    continue
+                    try:
+                        print "proxies successfully recieved."
+                        proxy_ip = px[px_counter]
+                        print proxy_ip, " - proxy ip \n downloading image ..."
+                        proxy = urllib2.ProxyHandler({'http': proxy_ip})
+                        opener = urllib2.build_opener(proxy)
+                        urllib2.install_opener(opener)
+                        r = urllib2.urlopen(url)
+                        f = open(img_path + img_num + ".jpg", 'wb')
+                        f.write(r.read())
+                        f.close()
+                        print "%s successfully loaded." % img_num
+                        px_counter += 1
+                        continue
+                    except e:
+                        print "error occurred", e
+                        continue
                 else:
-                    print "cannot get proxy, downloading stopped."
+                    print "can\'t get proxy, downloading stopped."
                     break
