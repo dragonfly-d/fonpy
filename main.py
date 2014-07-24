@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import os
 import urllib2
 
-img_size = "2000x1333"
+img_size = "1600x1200"
 
 web_page = urllib2.urlopen("http://www.goodfon.ru/").read()
 soup = BeautifulSoup(web_page)
