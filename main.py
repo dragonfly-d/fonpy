@@ -12,9 +12,13 @@ soup = BeautifulSoup(web_page)
 
 img_path = raw_input("please specify folder to save (or live blank for default D:\pyfon): ")
 
-if not img_path:
+if img_path:
+    if not img_path.endswith("\\"):
+        img_path += "\\"
+else:
     img_path = "D:\\pyfon\\"
 
+print img_path
 if not os.path.exists(img_path):
     os.makedirs(img_path)
 
@@ -65,7 +69,7 @@ for img in soup.find_all('img'):
                     proxy = urllib2.ProxyHandler({'http': proxy_ip})
                     opener = urllib2.build_opener(proxy)
                     urllib2.install_opener(opener)
-                    print 'proxy -%s added' % proxy_ip
+                    print 'proxy %s added' % proxy_ip
                     px_counter += 1
                     continue
                 else:
