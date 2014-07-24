@@ -3,6 +3,8 @@ __author__ = 'Dim'
 from bs4 import BeautifulSoup
 import os
 import urllib2
+from proxy_collecter import getProxyList
+
 
 img_size = "1600x1200"
 web_page = urllib2.urlopen("http://www.goodfon.ru/").read()
@@ -33,6 +35,8 @@ while True:
 
 web_page = urllib2.urlopen("http://www.goodfon.ru/catalog/%s/" % category).read()
 soup = BeautifulSoup(web_page)
+
+px_counter = 0
 for img in soup.find_all('img'):
     if "/wallpaper/" in img.get('src'):
         img_num = img.get('src').split("/")[5].replace("-n.jpg", "")
@@ -50,11 +54,20 @@ for img in soup.find_all('img'):
             if e.code == 404:
                 print 'Cannot load image %s, no such size or file - %s.' % (img_num, e.code)
                 continue
+
             if e.code == 503:
                 print 'should use proxy -%s' % e.code
-                proxy_ip = "119.46.110.17"
-                proxy = urllib2.ProxyHandler({'http': proxy_ip})
-                opener = urllib2.build_opener(proxy)
-                urllib2.install_opener(opener)
-                print 'proxy -%s added' % proxy_ip
-                continue
+                print "trying to get proxies..."
+                px = getProxyList()
+                if len(px) > 0:
+                    print "proxies successfully recieved."
+                    proxy_ip = px[px_counter]
+                    proxy = urllib2.ProxyHandler({'http': proxy_ip})
+                    opener = urllib2.build_opener(proxy)
+                    urllib2.install_opener(opener)
+                    print 'proxy -%s added' % proxy_ip
+                    px_counter += 1
+                    continue
+                else:
+                    print "cannot get proxy, downloading stopped."
+                    break
