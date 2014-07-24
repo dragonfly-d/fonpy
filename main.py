@@ -5,13 +5,16 @@ import os
 import urllib2
 
 img_size = "1600x1200"
-
 web_page = urllib2.urlopen("http://www.goodfon.ru/").read()
 soup = BeautifulSoup(web_page)
 
+img_path = raw_input("please specify folder to save (or live blank for default D:\pyfon): ")
 
-if not os.path.exists("D:\\pyfon\\"):
-    os.makedirs("D:\\pyfon\\")
+if not img_path:
+    img_path = "D:\\pyfon\\"
+
+if not os.path.exists(img_path):
+    os.makedirs(img_path)
 
 categories = {}
 for i, a in enumerate(soup.find_all('a', {"class": "menu"})):
@@ -37,19 +40,21 @@ for img in soup.find_all('img'):
         print url
 
         try:
-            proxy = urllib2.ProxyHandler({'http': '119.46.110.17'})
-            opener = urllib2.build_opener(proxy)
-            urllib2.install_opener(opener)
             r = urllib2.urlopen(url)
-            f = open("D:\\pyfon\\"+img_num+".jpg", 'wb')
+            f = open(img_path + img_num + ".jpg", 'wb')
             f.write(r.read())
             f.close()
             print "%s successfully loaded." % img_num
 
         except urllib2.HTTPError, e:
             if e.code == 404:
-                print 'Cannot load image %s, no such size - %s.' % (img_num, e.code)
+                print 'Cannot load image %s, no such size or file - %s.' % (img_num, e.code)
                 continue
             if e.code == 503:
                 print 'should use proxy -%s' % e.code
+                proxy_ip = "119.46.110.17"
+                proxy = urllib2.ProxyHandler({'http': proxy_ip})
+                opener = urllib2.build_opener(proxy)
+                urllib2.install_opener(opener)
+                print 'proxy -%s added' % proxy_ip
                 continue
