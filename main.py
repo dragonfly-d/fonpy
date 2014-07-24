@@ -1,4 +1,4 @@
-__author__ = 'Dmitiy'
+__author__ = 'Dimka'
 
 from bs4 import BeautifulSoup
 import os
@@ -54,4 +54,3 @@ for img in soup.find_all('img'):
                 print 'should use proxy -%s' % e.code
                 continue
                         """
-                        
