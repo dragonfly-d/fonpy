@@ -1,4 +1,4 @@
-__author__ = 'Dim'
+__author__ = 'dragonfly_d'
 
 from bs4 import BeautifulSoup
 import os
@@ -7,6 +7,8 @@ from proxy_collecter import getProxyList
 
 
 img_size = "1600x1200"
+
+categories = {}
 web_page = urllib2.urlopen("http://www.goodfon.ru/").read()
 soup = BeautifulSoup(web_page)
 
@@ -18,11 +20,10 @@ if img_path:
 else:
     img_path = "D:\\pyfon\\"
 
-print img_path
 if not os.path.exists(img_path):
     os.makedirs(img_path)
 
-categories = {}
+
 for i, a in enumerate(soup.find_all('a', {"class": "menu"})):
     if "/catalog/" in a.get('href'):
         categories[str(i)] = a.get('href').split("/")[2]
