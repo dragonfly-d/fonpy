@@ -35,7 +35,6 @@ for img in soup.find_all('img'):
         img_num = img.get('src').split("/")[5].replace("-n.jpg", "")
         url = img.get('src').replace("/wallpaper/previews", "/image").replace('-n', "-" + img_size)
         print url
-
         """
         try:
             proxy = urllib2.ProxyHandler({'http': '119.46.110.17'})
