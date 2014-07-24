@@ -46,6 +46,7 @@ for img in soup.find_all('img'):
         url = img.get('src').replace("/wallpaper/previews", "/image").replace('-n', "-" + img_size)
 
         try:
+            print "downloading image %s " % img_num
             r = urllib2.urlopen(url)
             f = open(img_path + img_num + ".jpg", 'wb')
             f.write(r.read())
@@ -54,19 +55,17 @@ for img in soup.find_all('img'):
 
         except urllib2.HTTPError, e:
             if e.code == 404:
-                print 'Cannot load image %s, no such size (or file) - %s.' % (img_num, e.code)
+                print 'Cannot download image %s, no such size (or file) - %s.' % (img_num, e.code)
                 continue
 
             if e.code == 503:
-                print "cannot get %s " % img_num
-                print 'should use proxy -%s' % e.code
-                print "trying to get proxies..."
+                print "Cannot download %s. Reason: download limit exceeded ($s)\ntrying to get proxies..." % (img_num, e.code)
                 px = getProxyList()
                 if len(px) > 0:
                     try:
                         print "proxies successfully recieved."
                         proxy_ip = px[px_counter]
-                        print proxy_ip, " - proxy ip \n downloading image ..."
+                        print proxy_ip, " - proxy ip \ndownloading image %s" % img_num
                         proxy = urllib2.ProxyHandler({'http': proxy_ip})
                         opener = urllib2.build_opener(proxy)
                         urllib2.install_opener(opener)
@@ -83,3 +82,4 @@ for img in soup.find_all('img'):
                 else:
                     print "can\'t get proxy, downloading stopped."
                     break
+print "Done."
