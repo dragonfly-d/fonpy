@@ -54,3 +54,4 @@ for img in soup.find_all('img'):
                 print 'should use proxy -%s' % e.code
                 continue
                         """
+                        
