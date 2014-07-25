@@ -3,7 +3,7 @@ __author__ = 'dragonfly_d'
 from bs4 import BeautifulSoup
 import os
 import urllib2
-from proxy_collecter import getProxyList
+from proxy_collecter import get_proxy_list
 
 
 img_size = "1600x1200"
@@ -59,8 +59,9 @@ for img in soup.find_all('img'):
                 continue
 
             if e.code == 503:
-                print "Cannot download %s. Reason: download limit exceeded ($s)\ntrying to get proxies..." % (img_num, e.code)
-                px = getProxyList()
+                print "Cannot download %s. " \
+                      "Reason: download limit exceeded ($s)\ntrying to get proxies..." % (img_num, e.code)
+                px = get_proxy_list()
                 if len(px) > 0:
                     try:
                         print "proxies successfully recieved."
