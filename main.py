@@ -1,4 +1,4 @@
-__author__ = 'dragonfly_d'
+__author__ = 'Dmitry Cheyshvili'
 
 from bs4 import BeautifulSoup
 import os
